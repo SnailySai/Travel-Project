@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+  <title>Ada & Charlotte · Places to Go Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Quicksand', 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+      background: #f5e8f7;
+      background-image: radial-gradient(circle at 20% 15%, rgba(255, 220, 240, 0.7) 0%, rgba(245, 225, 250, 0.85) 50%, rgba(255, 235, 245, 0.9) 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      margin: 0;
+      transition: background 0.3s ease, background-image 0.3s ease;
+    }
+
+    .generator-card {
+      max-width: 950px;
+      width: 100%;
+      background: rgba(255, 245, 255, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: #fef9ff;
+      border-radius: 3.5rem;
+      box-shadow: 0 30px 50px rgba(160, 100, 180, 0.18), 0 10px 25px rgba(140, 90, 160, 0.07);
+      padding: 2.8rem 2.5rem;
+      text-align: center;
+      border: 1px solid rgba(230, 180, 220, 0.55);
+      transition: all 0.25s;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #b86b9b;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      text-shadow: 2px 2px 0 rgba(255, 210, 235, 0.7);
+    }
+    h1 span {
+      background: #f8dcf0;
+      padding: 0.2rem 1.2rem;
+      border-radius: 4rem;
+      font-weight: 700;
+      color: #7d4b75;
+    }
+    .subtitle {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #b884aa;
+      margin-bottom: 2.2rem;
+      border-bottom: 2px dashed #e0b8d8;
+      display: inline-block;
+      padding-bottom: 0.5rem;
+      padding-left: 0.8rem;
+      padding-right: 0.8rem;
+    }
+
+    /* 🌸 BIGGER BUTTON – pastel purple/pink gradient */
+    .btn-generate {
+      background: linear-gradient(145deg, #f5cee8, #e9b0da);
+      color: #5c2e52;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      padding: 1.6rem 3.8rem;
+      border-radius: 6rem;
+      letter-spacing: 0.6px;
+      box-shadow: 0 16px 28px rgba(190, 110, 170, 0.35), 0 4px 12px rgba(160, 90, 140, 0.1);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin: 1rem 0 2.8rem;
+      border: 2px solid #fcd9f0;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      backdrop-filter: blur(6px);
+      text-shadow: 0 1px 2px rgba(255,240,250,0.8);
+    }
+    .btn-generate:hover {
+      background: linear-gradient(145deg, #fad4ef, #f0bde2);
+      box-shadow: 0 22px 34px rgba(185, 100, 165, 0.4);
+      transform: translateY(-4px);
+      border-color: #f7c0e5;
+      color: #45203a;
+    }
+    .btn-generate:active {
+      transform: translateY(2px);
+      box-shadow: 0 9px 18px rgba(160, 80, 130, 0.5);
+    }
+
+    .result-box {
+      background: #fef7fd;
+      border-radius: 2.8rem;
+      padding: 2.2rem 2rem 2.4rem;
+      margin-top: 1.5rem;
+      background: #ffffffec;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 2px solid #f2d2eb;
+      box-shadow: inset 0 1px 10px rgba(245, 210, 235, 0.8), 0 18px 28px rgba(150, 90, 140, 0.14);
+      transition: all 0.25s;
+      min-height: 230px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .country-name {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #a1588a;
+      background: #fae3f5;
+      display: inline-block;
+      padding: 0.4rem 2.6rem;
+      border-radius: 3rem;
+      margin-bottom: 1.6rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      box-shadow: 0 8px 16px rgba(200, 130, 180, 0.22);
+      border: 1px solid #eeb5da;
+    }
+
+    .place-heading {
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: #65415b;
+      margin-bottom: 0.8rem;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .must-try-desc {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #7b5272;
+      background: #fef1fa;
+      padding: 1rem 2rem;
+      border-radius: 2.8rem;
+      display: inline-block;
+      max-width: 90%;
+      margin: 0.3rem auto 0;
+      line-height: 1.5;
+      border: 1px dashed #dba3ca;
+      font-style: normal;
+      box-shadow: 0 3px 10px rgba(210, 140, 180, 0.25);
+    }
+
+    .placeholder-message {
+      color: #cc9dbe;
+      font-size: 1.45rem;
+      font-weight: 500;
+      opacity: 0.85;
+    }
+
+    hr {
+      display: none;
+    }
+
+    @media (max-width: 550px) {
+      .generator-card {
+        padding: 2rem 1.3rem;
+      }
+      .btn-generate {
+        font-size: 1.8rem;
+        padding: 1.3rem 2.5rem;
+      }
+      .country-name {
+        font-size: 1.9rem;
+      }
+      .place-heading {
+        font-size: 1.7rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="generator-card">
+    <h1>
+      ✈️ <span>Ada & Charlotte</span> 🌍
+    </h1>
+    <div class="subtitle">Places to Go Generator</div>
+
+    <button class="btn-generator" id="generateBtn">
+      <span>✨</span> Surprise me! <span>🗺️</span>
+    </button>
+
+    <div class="result-box" id="resultContainer">
+      <div class="placeholder-message">🌸 Your next dream destination…</div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const DESTINATIONS = [
+        { country: "Japan", place: "Sushi Dai", desc: "best omakase sushi in the country, melt-in-your-mouth tuna at Tsukiji." },
+        { country: "Japan", place: "Shinjuku Gyoen National Garden", desc: "unforgettable cherry blossom or autumn foliage experience." },
+        { country: "Japan", place: "Ichiran Shibuya", desc: "best tonkotsu ramen with personalized flavor, solo ramen bliss." },
+        { country: "Japan", place: "Fushimi Inari Shrine", desc: "unforgettable thousands of red torii gates hike at dawn." },
+        { country: "Japan", place: "Gyukatsu Motomura", desc: "best beef cutlet you dip in hot stone sauce, sizzling perfection." },
+        { country: "Japan", place: "Arashiyama Bamboo Grove", desc: "unforgettable sunrise bamboo forest walk, otherworldly green." },
+        { country: "Japan", place: "Kikunoi", desc: "best kaiseki multi-course dinner in Kyoto, seasonal poetry." },
+        { country: "Japan", place: "Nara Park", desc: "unforgettable bowing deer and giant Buddha, magical encounter." },
+        { country: "Japan", place: "Tsuta", desc: "best Michelin-starred shoyu ramen with truffle oil." },
+        { country: "Japan", place: "Zao Fox Village", desc: "unforgettable fluffy foxes roaming in snowy sanctuary." },
+        { country: "France", place: "Le Comptoir du Relais", desc: "best duck confit in a cozy Parisian bistro." },
+        { country: "France", place: "Seine river cruise", desc: "unforgettable Eiffel Tower sunset lighting experience." },
+        { country: "France", place: "L'Ambroisie", desc: "best modern French tasting menu in Paris, legendary." },
+        { country: "France", place: "Mont Saint-Michel", desc: "unforgettable medieval abbey at high tide, a floating wonder." },
+        { country: "France", place: "Bouillon Chartier", desc: "best affordable escargot and beef bourguignon in Belle Époque hall." },
+        { country: "France", place: "Lavender fields in Provence", desc: "unforgettable July bloom driving route, purple endless." },
+        { country: "France", place: "Pierre Hermé", desc: "best Ispahan macaron, rose-lychee-raspberry heaven." },
+        { country: "France", place: "Château de Versailles hall of mirrors", desc: "unforgettable golden gallery at opening hour." },
+        { country: "Italy", place: "Roscioli", desc: "best carbonara and salumi in Rome, guanciale masterpiece." },
+        { country: "Italy", place: "Colosseum underground tour", desc: "unforgettable gladiator arena floor experience." },
+        { country: "Italy", place: "Da Michele", desc: "best classic margherita pizza in Naples, pure soul." },
+        { country: "Italy", place: "Path of the Gods hike", desc: "unforgettable Amalfi Coast cliffside views and lemon breeze." },
+        { country: "Italy", place: "Trattoria Sostanza", desc: "best butter chicken (pollo al burro) in Florence." },
+        { country: "Italy", place: "St. Mark's Square at night", desc: "unforgettable orchestra music and candlelight acqua alta." },
+        { country: "Italy", place: "Gelateria Dondoli", desc: "best pistachio gelato in San Gimignano, world champion." },
+        { country: "Italy", place: "Matera sassi cave stay", desc: "unforgettable ancient stone city under stars." },
+        { country: "USA", place: "Katz's Delicatessen", desc: "best pastrami sandwich in New York City, juicy and towering." },
+        { country: "USA", place: "Broadway show", desc: "unforgettable world-class theater experience (e.g., The Lion King)." },
+        { country: "USA", place: "Franklin Barbecue", desc: "best beef brisket in Austin, Texas, worth the wait." },
+        { country: "USA", place: "Grand Canyon South Rim", desc: "unforgettable sunrise over layered red rock immensity." },
+        { country: "USA", place: "The French Laundry", desc: "best nine-course chef's tasting menu in Napa Valley." },
+        { country: "USA", place: "Yellowstone's Grand Prismatic Spring", desc: "unforgettable rainbow-hot spring aerial view." },
+        { country: "USA", place: "Joe's Stone Crab", desc: "best stone crab claws with mustard sauce in Miami." },
+        { country: "USA", place: "Antelope Canyon", desc: "unforgettable light beams in sculpted sandstone slots." },
+        { country: "South Africa", place: "The Test Kitchen", desc: "best innovative fusion tasting menu in Cape Town." },
+        { country: "South Africa", place: "Table Mountain cable car", desc: "unforgettable panoramic ocean and city view." },
+        { country: "South Africa", place: "Mzoli's", desc: "best township braai grilled meat experience, vibrant." },
+        { country: "South Africa", place: "Chapman's Peak Drive", desc: "unforgettable coastal sunset road with cliffs." },
+        { country: "South Africa", place: "Fyn", desc: "best South African-Japanese fine dining in Cape Town." },
+        { country: "South Africa", place: "Boulders Beach", desc: "unforgettable penguin colony swim with African penguins." },
+        { country: "Thailand", place: "Jay Fai", desc: "best Michelin-starred crab omelet in Bangkok, wok goddess." },
+        { country: "Thailand", place: "Wat Arun sunset", desc: "unforgettable temple silhouette over Chao Phraya river." },
+        { country: "Thailand", place: "Thipsamai", desc: "best pad thai with giant prawns wrapped in egg." },
+        { country: "Thailand", place: "Railay Beach rock climbing", desc: "unforgettable limestone cliffs above turquoise water." },
+        { country: "Thailand", place: "Somtum Der", desc: "best green papaya salad and grilled chicken, spicy joy." },
+        { country: "Thailand", place: "Chiang Mai Sunday Night Market", desc: "unforgettable street food and handmade crafts." },
+        { country: "Turkey", place: "Karaköy Lokantası", desc: "best mezze and slow-cooked lamb in Istanbul." },
+        { country: "Turkey", place: "Grand Bazaar", desc: "unforgettable sensory overload of spices and haggling." },
+        { country: "Turkey", place: "Çiya Sofrası", desc: "best forgotten Anatolian dishes, sour cherries & lamb." },
+        { country: "Turkey", place: "Hot air balloon Cappadocia", desc: "unforgettable sunrise over fairy chimneys." },
+        { country: "Turkey", place: "Vefa Bozacısı", desc: "best traditional boza fermented drink, historic." },
+        { country: "Turkey", place: "Pamukkale thermal pools", desc: "unforgettable white travertine terraces at sunset." },
+        { country: "Mexico", place: "El Califa", desc: "best al pastor tacos in Mexico City, trompo magic." },
+        { country: "Mexico", place: "Sian Ka'an biosphere", desc: "unforgettable boat ride through mangroves with dolphins." },
+        { country: "Mexico", place: "Pujol", desc: "best mole madre aged for months in Polanco." },
+        { country: "Mexico", place: "Hierve el Agua", desc: "unforgettable petrified waterfall infinity pools hike." },
+        { country: "Mexico", place: "La Docena Oyster Bar", desc: "best fresh Pacific oysters with hot sauce." },
+        { country: "Mexico", place: "Mariano's Mariachi Plaza", desc: "unforgettable midnight serenade in Guadalajara." },
+        { country: "Spain", place: "Bar Cañete", desc: "best crispy calamari and Iberian ham in Barcelona." },
+        { country: "Spain", place: "Alhambra at night", desc: "unforgettable Moorish palace illuminated under stars." },
+        { country: "Spain", place: "Casa Botín", desc: "best suckling pig in Madrid, world's oldest restaurant." },
+        { country: "Spain", place: "Caminito del Rey", desc: "unforgettable cliffside walkway above deep gorge." },
+        { country: "Spain", place: "Quimet & Quimet", desc: "best montaditos with vermouth, standing tapas gem." },
+        { country: "Spain", place: "Plaza de España flamenco", desc: "unforgettable flamenco performance in mosaic alcoves." },
+        { country: "India", place: "Butter Chicken Factory", desc: "best murgh makhani in Old Delhi, creamy legend." },
+        { country: "India", place: "Varanasi Ganga Aarti", desc: "unforgettable fire ritual on the ghats at dusk." },
+        { country: "India", place: "Saravana Bhavan", desc: "best masala dosa and filter coffee in Chennai." },
+        { country: "India", place: "Kerala backwaters houseboat", desc: "unforgettable overnight with toddy and fresh seafood." },
+        { country: "India", place: "Kuremal Mohan Lal Kulfi", desc: "best mango-stuffed kulfi in Delhi, fruit shell surprise." },
+        { country: "India", place: "Golden Temple langar", desc: "unforgettable free communal meal with thousands of pilgrims." },
+        { country: "Australia", place: "Tetsuya's", desc: "best confit of ocean trout in Sydney, serene." },
+        { country: "Australia", place: "Great Ocean Road sunset flight", desc: "unforgettable twelve apostles helicopter view." },
+        { country: "Australia", place: "Brae", desc: "best farm-to-table tasting menu in Victoria." },
+        { country: "Australia", place: "Ningaloo Reef whale shark", desc: "unforgettable open-water snorkel with gentle giants." },
+        { country: "Australia", place: "Harry's Cafe de Wheels", desc: "best meat pie with mashed peas in Sydney." },
+        { country: "Australia", place: "Uluru at sunrise", desc: "unforgettable desert silence and red rock color change." },
+        { country: "Morocco", place: "Nomad", desc: "best spicy Moroccan lamb burger in Marrakech." },
+        { country: "Morocco", place: "Chefchaouen blue alleys", desc: "unforgettable lost walk through indigo streets." },
+        { country: "Morocco", place: "Amal tagine", desc: "best chicken tagine with preserved lemon, nonprofit center." },
+        { country: "Morocco", place: "Merzouga desert camp", desc: "unforgettable camel trek with Berber drumming." },
+        { country: "Morocco", place: "Café Clock", desc: "best camel burger and roof view of Fes medina." },
+        { country: "Morocco", place: "Jemaa el-Fnaa night", desc: "unforgettable snake charmers, juices, grilled meat stalls." },
+        { country: "Peru", place: "Central", desc: "best potato biodiversity tasting menu, world's top restaurant." },
+        { country: "Peru", place: "Machu Picchu sunrise", desc: "unforgettable solo moment above cloud forest." },
+        { country: "Peru", place: "La Lucha Sanguchería", desc: "best chicharrón sandwich with sweet potato fries." },
+        { country: "Peru", place: "Rainbow Mountain hike", desc: "unforgettable 5,000m altitude with alpacas." },
+        { country: "Peru", place: "Maido", desc: "best Nikkei miso black cod, Japanese-Peruvian fusion." },
+        { country: "Peru", place: "Amazon canopy walkway", desc: "unforgettable parrot lick at dawn in Iquitos." },
+        { country: "Greece", place: "Kostas", desc: "best souvlaki in Athens, cash-only tiny queue." },
+        { country: "Greece", place: "Santorini caldera sunset", desc: "unforgettable view from Oia castle ruin." },
+        { country: "Greece", place: "To Psaraki", desc: "best grilled octopus and sea urchin in Athens Riviera." },
+        { country: "Greece", place: "Navagio Beach lookout", desc: "unforgettable shipwreck cove from cliff above." },
+        { country: "Greece", place: "Fresko Yogurt Bar", desc: "best Greek yogurt with thyme honey in Athens." },
+        { country: "Greece", place: "Meteora monasteries", desc: "unforgettable sunset between rock pillars." },
+        { country: "Portugal", place: "Pastéis de Belém", desc: "best custard tart with cinnamon, secret recipe since 1837." },
+        { country: "Portugal", place: "Douro Valley vineyard cruise", desc: "unforgettable port wine terraces at golden hour." },
+        { country: "Portugal", place: "Cervejaria Ramiro", desc: "best garlic shrimp and percebes in Lisbon." },
+        { country: "Portugal", place: "Pena Palace", desc: "unforgettable colorful Romanticist castle in Sintra mist." },
+        { country: "Vietnam", place: "Bún chả Hương Liên", desc: "best Obama-approved bun cha in Hanoi." },
+        { country: "Vietnam", place: "Ha Long Bay kayak", desc: "unforgettable limestone karsts and hidden lagoons." },
+        { country: "Vietnam", place: "The Lunch Lady", desc: "best daily rotating noodle soup in Saigon." },
+        { country: "Vietnam", place: "Hoi An lantern night", desc: "unforgettable old town glowing with silk lanterns." },
+        { country: "Argentina", place: "Don Julio", desc: "best grass-fed beef and provoleta in Buenos Aires." },
+        { country: "Argentina", place: "Perito Moreno glacier trek", desc: "unforgettable ice calving and crampon walk." },
+        { country: "Argentina", place: "El Cuartito", desc: "best fugazzeta rellena pizza, cheesy onion dream." },
+        { country: "Argentina", place: "Iguazú Falls devil's throat", desc: "unforgettable thundering water curtain." },
+        { country: "Iceland", place: "Bæjarins Beztu Pylsur", desc: "best lamb hot dog with crispy onions in Reykjavik." },
+        { country: "Iceland", place: "Blue Lagoon at dusk", desc: "unforgettable silica mask & steam in milky waters." },
+        { country: "Iceland", place: "Fjöruborðið", desc: "best langoustine tails in garlic butter." },
+        { country: "Iceland", place: "Jökulsárlón glacier lagoon", desc: "unforgettable floating icebergs and seal spotting." },
+        { country: "South Korea", place: "Gwangjang Market", desc: "best bindaetteok mung bean pancake and mayak kimbap." },
+        { country: "South Korea", place: "Gyeongbokgung palace hanbok", desc: "unforgettable royal guard ceremony in traditional dress." },
+        { country: "South Korea", place: "Jungsik", desc: "best modern Korean fine dining with bibimbap risotto." },
+        { country: "South Korea", place: "Jeju Island haenyeo divers", desc: "unforgettable female free-divers and fresh abalone." },
+        { country: "Colombia", place: "Andrés Carne de Res", desc: "best chicharrón and vibrant rumba in Chía." },
+        { country: "Colombia", place: "Cartagena old town sunset", desc: "unforgettable colorful balconies and ceviche." },
+        { country: "Colombia", place: "Leo", desc: "best Amazonian ant-infused tasting menu in Bogotá." },
+        { country: "Colombia", place: "Cocora Valley wax palms", desc: "unforgettable hike among world's tallest palms." }
+      ];
+
+      const generateBtn = document.getElementById('generateBtn');
+      const resultContainer = document.getElementById('resultContainer');
+
+      function getRandomDestination() {
+        const randomIndex = Math.floor(Math.random() * DESTINATIONS.length);
+        return DESTINATIONS[randomIndex];
+      }
+
+      function renderDestination(dest) {
+        if (!dest) return;
+        resultContainer.innerHTML = `
+          <div class="country-name">${dest.country}</div>
+          <div class="place-heading">${dest.place}</div>
+          <div class="must-try-desc">✨ ${dest.desc} ✨</div>
+        `;
+      }
+
+      function generateNewPlace() {
+        const newDest = getRandomDestination();
+        renderDestination(newDest);
+        resultContainer.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+          if (resultContainer) resultContainer.style.transform = 'scale(1)';
+        }, 150);
+      }
+
+      generateBtn.addEventListener('click', generateNewPlace);
+
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          generateNewPlace();
+        }, 200);
+      });
+    })();
+  </script>
+</body>
+</html>
